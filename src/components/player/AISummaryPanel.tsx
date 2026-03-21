@@ -70,8 +70,10 @@ Make all content highly specific to "${videoTitle}" — not generic filler. Bull
   const data = await response.json();
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-  try {
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
+ try {
+    // Remove markdown code blocks if present
+    const cleaned = text.replace(/```json|```/g, '').trim();
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('No JSON found');
     return JSON.parse(jsonMatch[0]);
   } catch (e) {
