@@ -12,7 +12,7 @@ ${videoDescription ? `Video Description: ${videoDescription}` : ''}
 
 Create questions that test understanding of key concepts covered in this video.
 
-Return ONLY a JSON array in this exact format (no markdown, no explanation, raw JSON only):
+Return ONLY a raw JSON array. No markdown, no code blocks, no backticks, no explanation. Start directly with [ and end with ]:
 [
   {
     "question": "Question text here?",
@@ -22,17 +22,19 @@ Return ONLY a JSON array in this exact format (no markdown, no explanation, raw 
 ]
 
 Make sure:
-1. Questions are specific and relevant to "${videoTitle}"
-2. Each question has exactly 4 options
-3. correctAnswer is the index (0-3) of the correct option
-4. The JSON is valid and parseable`;
+1. Generate exactly 12 questions
+2. Questions are specific and relevant to "${videoTitle}"
+3. Each question has exactly 4 options
+4. correctAnswer is the index (0-3) of the correct option
+5. The JSON is valid and parseable
+6. No markdown, no backticks, no code blocks — raw JSON only`;
 
     const response = await fetch(`${GEMINI_URL}?key=${API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
+        generationConfig: { temperature: 0.4, maxOutputTokens: 3000 },
       }),
     });
 
@@ -45,12 +47,17 @@ Make sure:
     const data = await response.json();
     const content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    // Robust JSON extraction
+    let jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      const cleaned = content.replace(/```json|```/g, '').trim();
+      jsonMatch = cleaned.match(/\[[\s\S]*\]/);
+    }
     if (!jsonMatch) throw new Error('Invalid quiz format received');
 
     const questions: QuizQuestion[] = JSON.parse(jsonMatch[0]);
 
-    if (!Array.isArray(questions) || questions.length !== 12) {
+    if (!Array.isArray(questions) || questions.length === 0) {
       throw new Error('Invalid number of questions');
     }
 
@@ -71,53 +78,63 @@ function getFallbackQuiz(title: string): QuizQuestion[] {
   return [
     {
       question: `What is the main topic covered in "${title}"?`,
-      options: [
-        'Understanding core concepts and fundamentals',
-        'Advanced techniques and best practices',
-        'Implementation details and examples',
-        'All of the above',
-      ],
+      options: ['Understanding core concepts', 'Advanced techniques', 'Implementation details', 'All of the above'],
       correctAnswer: 3,
     },
     {
-      question: 'Which of the following is most important when learning this topic?',
-      options: [
-        'Memorizing syntax',
-        'Understanding the underlying concepts',
-        'Copying code examples',
-        'Skipping to advanced topics',
-      ],
+      question: 'Which approach is most important when learning this topic?',
+      options: ['Memorizing syntax', 'Understanding underlying concepts', 'Copying code examples', 'Skipping to advanced topics'],
       correctAnswer: 1,
     },
     {
-      question: 'What approach is recommended for practicing what you learn?',
-      options: [
-        'Only watch videos without coding',
-        'Build small projects and experiments',
-        'Read documentation only',
-        'Skip practice and move to next topic',
-      ],
+      question: 'What is the recommended way to practice what you learn?',
+      options: ['Only watch videos', 'Build small projects', 'Read documentation only', 'Skip practice'],
       correctAnswer: 1,
     },
     {
       question: 'When should you review the material?',
-      options: [
-        'Only once while watching',
-        'After completing the entire course',
-        'Regularly and when applying concepts',
-        'Never, once is enough',
-      ],
+      options: ['Only once while watching', 'After completing the course', 'Regularly when applying concepts', 'Never'],
       correctAnswer: 2,
     },
     {
       question: 'What is the best way to reinforce learning?',
-      options: [
-        'Take notes and apply concepts',
-        'Just watch passively',
-        'Skip difficult parts',
-        'Watch at 2x speed always',
-      ],
+      options: ['Take notes and apply concepts', 'Watch passively', 'Skip difficult parts', 'Watch at 2x always'],
       correctAnswer: 0,
+    },
+    {
+      question: 'How should you approach difficult concepts?',
+      options: ['Skip them entirely', 'Break them into smaller parts', 'Memorize without understanding', 'Move to next topic'],
+      correctAnswer: 1,
+    },
+    {
+      question: 'What makes a learning session most effective?',
+      options: ['Watching as many videos as possible', 'Active engagement and note taking', 'Passive consumption', 'Speed watching'],
+      correctAnswer: 1,
+    },
+    {
+      question: 'How often should you test your knowledge?',
+      options: ['Never', 'Only at the end', 'Regularly throughout learning', 'Once per week'],
+      correctAnswer: 2,
+    },
+    {
+      question: 'What is spaced repetition useful for?',
+      options: ['Watching videos faster', 'Long term memory retention', 'Skipping content', 'Taking fewer notes'],
+      correctAnswer: 1,
+    },
+    {
+      question: 'What should you do after finishing a video?',
+      options: ['Immediately watch the next one', 'Summarize what you learned', 'Close the app', 'Delete your notes'],
+      correctAnswer: 1,
+    },
+    {
+      question: 'How does teaching others help you learn?',
+      options: ['It does not help', 'Reinforces your own understanding', 'Makes learning slower', 'Only helps the other person'],
+      correctAnswer: 1,
+    },
+    {
+      question: 'What is the most important factor in learning success?',
+      options: ['Natural talent', 'Consistency and practice', 'Expensive courses', 'Watching at high speed'],
+      correctAnswer: 1,
     },
   ];
 }
