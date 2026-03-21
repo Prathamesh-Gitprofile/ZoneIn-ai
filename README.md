@@ -177,6 +177,6 @@ Add all environment variables in Vercel → Settings → Environment Variables, 
 
 <div align="center">
 
-Built by [Prathamesh](https://github.com/Prathamesh-Gitprofile) · [zone-in-ai.vercel.app](https://zone-in-ai.vercel.app)
+Built by [Prathamesh](https://github.com/Prathamesh-Gitprofile) 
 
 </div>
