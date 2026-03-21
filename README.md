@@ -1,73 +1,182 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# ZoneIn.ai
 
-Currently, two official plugins are available:
+**Learn without the noise.**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Paste a YouTube playlist. Watch distraction-free. Take notes, get AI summaries, quiz yourself, and track your streak.
 
-## React Compiler
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-zone--in--ai.vercel.app-FF2D8D?style=for-the-badge&logo=vercel&logoColor=white)](https://zone-in-ai.vercel.app)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
+[![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![screenshot-placeholder](./screenshots/hero.png)
 
-## Expanding the ESLint configuration
+</div>
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## The Problem
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+YouTube is an incredible learning resource — but it's designed to distract you. Recommendations, comments, and autoplay pull you away from what you came to learn. There's no way to track progress, take structured notes, or test your understanding — all in one place.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**ZoneIn.ai fixes this.**
+
+---
+
+## Features
+
+- 🎬 **Distraction-free player** — no recommendations, no comments, no noise
+- 🔍 **Focus Mode** — fullscreen, ESC to exit
+- ✅ **Progress tracking** — mark videos complete, track X/Y per playlist
+- 📝 **Timestamped notes** — notes tied to exact video moments, click to seek
+- 🔗 **Resources tab** — save articles, docs, and links per video
+- 🤖 **AI Summary** — Gemini generates overview, key points, and takeaways
+- 🧠 **AI Quiz** — 12 questions per video to test your understanding
+- 🔥 **Streak tracking** — 6-month activity heatmap, daily streak counter
+- ☁️ **Cloud sync** — Google sign in, everything saved to Firestore
+
+---
+
+## Screenshots
+
+| Dashboard | Player |
+|---|---|
+| ![dashboard](./screenshots/dashboard.png) | ![player](./screenshots/player.png) |
+
+| AI Summary | Streaks |
+|---|---|
+| ![summary](./screenshots/summary.png) | ![streaks](./screenshots/streaks.png) |
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|---|---|
+| Frontend | React 18 + TypeScript + Vite |
+| Styling | Tailwind CSS + shadcn/ui |
+| Animation | GSAP |
+| Auth | Firebase Authentication (Google) |
+| Database | Firebase Firestore |
+| AI | Google Gemini 2.5 Flash |
+| Video | YouTube Data API v3 + IFrame API |
+| Deployment | Vercel |
+
+---
+
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────┐
+│                  ZoneIn.ai                      │
+│               React + TypeScript                │
+└──────────┬───────────────────┬──────────────────┘
+           │                   │
+┌──────────▼──────┐   ┌────────▼───────────┐
+│  Firebase Auth  │   │  YouTube Data API  │
+│  Google Sign In │   │  Playlist fetching │
+└──────────┬──────┘   └────────┬───────────┘
+           │                   │
+┌──────────▼───────────────────▼───────────┐
+│           Firebase Firestore              │
+│  users · playlists · videos · notes      │
+│  resources · ai_summaries · activities   │
+└───────────────────────────────────────────┘
+           │
+┌──────────▼──────────────────┐
+│      Google Gemini API      │
+│  AI Summaries + AI Quizzes  │
+└─────────────────────────────┘
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project Structure
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── components/
+│   ├── player/
+│   │   ├── NotesPanel.tsx        # Timestamped notes
+│   │   ├── ResourcesPanel.tsx    # Save links & articles
+│   │   ├── AISummaryPanel.tsx    # Gemini AI summary
+│   │   └── QuizPanel.tsx         # Gemini AI quiz
+│   └── ui/                       # shadcn/ui components
+├── sections/
+│   ├── HeroSection.tsx           # Landing page
+│   ├── DashboardSection.tsx      # Playlist library
+│   ├── PlayerSection.tsx         # Main watch screen
+│   ├── StreaksSection.tsx         # Activity heatmap
+│   └── SettingsSection.tsx       # User settings
+├── contexts/
+│   └── AuthContext.tsx           # Firebase auth state
+├── hooks/
+│   ├── useStreak.ts              # Streak logic
+│   └── useDebounce.ts            # Auto-save debounce
+└── lib/
+    ├── firebase.ts               # Firestore operations
+    ├── youtube.ts                # YouTube API helpers
+    └── claude.ts                 # Gemini quiz generation
+```
+
+---
+
+## Local Setup
+
+### Prerequisites
+- Node.js 18+
+- Firebase project with Auth + Firestore enabled
+- YouTube Data API v3 key
+- Gemini API key from [aistudio.google.com](https://aistudio.google.com)
+
+### Steps
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/Prathamesh-Gitprofile/ZoneIn-ai.git
+cd ZoneIn-ai
+
+# 2. Install dependencies
+npm install
+
+# 3. Create .env file
+cp .env.example .env
+# Fill in your API keys
+
+# 4. Start dev server
+npm run dev
+```
+
+### Environment Variables
+
+```env
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+VITE_YOUTUBE_API_KEY=
+VITE_GEMINI_API_KEY=
+```
+
+> **Note:** Add `localhost` to Firebase authorized domains and create the required Firestore composite indexes on first run.
+
+---
+
+## Deployment
+
+Deployed on **Vercel**. Any push to `main` triggers an automatic redeploy.
+
+Add all environment variables in Vercel → Settings → Environment Variables, and add your Vercel domain to Firebase authorized domains.
+
+---
+
+<div align="center">
+
+Built by [Prathamesh](https://github.com/Prathamesh-Gitprofile) · [zone-in-ai.vercel.app](https://zone-in-ai.vercel.app)
+
+</div>
