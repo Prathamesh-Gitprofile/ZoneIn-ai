@@ -178,7 +178,9 @@ export function StreaksSection() {
 
   const actMap = new Map<string, number>();
   activities.forEach(a => {
-    const key = new Date(a.date).toISOString().split('T')[0];
+    const d = new Date(a.date);
+    // Use local date not UTC to avoid timezone shift
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     actMap.set(key, a.videosWatched);
   });
 
