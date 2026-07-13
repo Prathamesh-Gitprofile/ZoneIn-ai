@@ -1,7 +1,7 @@
 import type { QuizQuestion } from '@/types';
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent`;
 
 export async function generateQuiz(videoTitle: string, videoDescription: string = ''): Promise<QuizQuestion[]> {
   try {
